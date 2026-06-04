@@ -59,7 +59,7 @@ def index_video_node(state: VideoAuditState) -> Dict[str, Any]:
             "ocr_text": []
         }
 
-def audio_content_node(state:VideoAuditState) -> Dict[str, Any]:
+def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
     '''
     Performs retrieval Augmented Generation to audit the content - brand video
     '''
