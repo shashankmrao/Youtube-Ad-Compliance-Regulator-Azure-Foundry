@@ -1,0 +1,23 @@
+{
+  "session_id": "77080bea-8183-42fb-951d-ec36083e4817",
+  "video_id": "vid_77080bea",
+  "status": "FAIL",
+  "final_report": "The video violates multiple compliance rules, including unsupported product claims, lack of clear disclosure of sponsorship, and improper disclosure format. Immediate corrective action is required to ensure compliance with FTC guidelines.",
+  "compliance_results": [
+    {
+      "category": "Claim Validation",
+      "severity": "CRITICAL",
+      "description": "The video claims that Neutrogena Ultra Sheer sunscreen has 'an invisible finish' and 'you can't see it,' which could be interpreted as a scientific claim requiring proof. There is no evidence provided in the video to substantiate this claim, violating the rule against making unsupported claims about a product."
+    },
+    {
+      "category": "Disclosure Placement",
+      "severity": "CRITICAL",
+      "description": "The video does not include any clear disclosure that the endorsement is sponsored or paid. There is no mention of terms like 'ad,' 'sponsored,' or 'advertisement,' nor is there any visible disclosure in the video or transcript. This violates the rule requiring disclosures to be clear, simple, and hard to miss."
+    },
+    {
+      "category": "Disclosure Format",
+      "severity": "MAJOR",
+      "description": "The endorsement does not use both audio and visual disclosures, as required for video platforms like YouTube. Disclosures should be present in the video itself and not just in the description or metadata."
+    }
+  ]
+}
