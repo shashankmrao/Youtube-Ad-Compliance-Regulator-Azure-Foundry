@@ -1,8 +1,6 @@
 import os
 import logging
 from azure.monitor.opentelemetry import configure_azure_monitor
-from dotenv import load_dotenv
-load_dotenv()
 
 logger = logging.getLogger("brand-guardian-telemetry")
 

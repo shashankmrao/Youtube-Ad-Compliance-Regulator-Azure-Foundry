@@ -31,4 +31,7 @@ match = re.search(r"```json\s*(.*?)\s*```", content.strip(), re.DOTALL)
 AZURE_OPENAI_EMBEDDING_ENDPOINT=""
 AZURE_OPENAI_EMBEDDING_API_KEY=""
 
+Command to run FastAPI
+uv run uvicorn backend.src.api.server:app --reload
+
 
