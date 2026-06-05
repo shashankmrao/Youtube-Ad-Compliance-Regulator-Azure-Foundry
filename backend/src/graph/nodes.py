@@ -65,6 +65,8 @@ def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
     '''
     logger.info("---[Node: Auditor] querying Knowledge base and LLM")
     transcript= state.get("transcript","")
+    ocr_text = state.get("ocr_text",[])
+    logger.info(f"TRANSCRIPT: {transcript}\nOCR_TEXT: {ocr_text}")
     if not transcript:
         logger.warning("No transcript available. Skipping audit....")
         return {
@@ -73,13 +75,17 @@ def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
         }
     
     llm= AzureChatOpenAI(
+        temperature=0.0,
+        api_key = os.getenv("AZURE_OPENAI_API_KEY"),
+        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
         azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT"),
-        api_version= os.getenv("AZURE_OPENAI_API_VERSION"),
-        temperature=0.0
+        api_version= os.getenv("AZURE_OPENAI_API_VERSION")  
     )
     embeddings= AzureOpenAIEmbeddings(
-        azure_deployment="text-embedding-3-small",
-        api_version= os.getenv("AZURE_OPENAI_API_VERSION")
+        azure_deployment = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT","text-embbedding-3-small"),
+        api_version = os.getenv("AZURE_OPENAI_API_VERSION","2024-02-01"),
+        api_key = os.getenv("AZURE_OPENAI_EMBEDDING_API_KEY"),
+        azure_endpoint = os.getenv("AZURE_OPENAI_EMBEDDING_ENDPOINT")
     )
 
     vector_store = AzureSearch(
@@ -88,8 +94,6 @@ def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
         index_name = os.getenv("AZURE_SEARCH_INDEX_NAME"),
         embedding_function = embeddings.embed_query
     )
-
-    ocr_text = state.get("ocr_text",[])
     query_text = f"{transcript} {''.join(ocr_text)}"
     docs = vector_store.similarity_search(query_text,k=3)
     retrieved_rules = "\n\n".join([doc.page_content for doc in docs])
@@ -128,8 +132,9 @@ def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
             HumanMessage(content=user_message)
         ])
         content = response.content
-        if "```" in content:
-            content = re.search(r"```(?:json)?(.?)```", content, re.DOTALL).group(1)
+        match = re.search(r"```json\s*(.*?)\s*```", content.strip(), re.DOTALL)
+        if match:
+            content = match.group(1)
         audit_data = json.loads(content.strip())
         return {
             "compliance_results": audit_data.get("compliance_results",[]),

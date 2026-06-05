@@ -9,7 +9,7 @@ logger = logging.getLogger("video-indexer")
 
 class VideoIndexerService:
     def __init__(self):
-        self.account_id = os.getenv("AZURE_VI_ACCOOUNT_ID")
+        self.account_id = os.getenv("AZURE_VI_ACCOUNT_ID")
         self.location = os.getenv("AZURE_VI_LOCATION")
         self.subscription_id = os.getenv("AZURE_SUBSCRIPTION_ID")
         self.resource_group = os.getenv("AZURE_RESOURCE_GROUP")
@@ -24,7 +24,7 @@ class VideoIndexerService:
             token_object = self.credential.get_token("https://management.azure.com/.default")
             return token_object.token
         except Exception as e:
-            logger.erro(f"Failed to get Azure token: {e}")
+            logger.error(f"Failed to get Azure token: {e}")
             raise
 
     def get_account_token(self,arm_access_token):
@@ -73,7 +73,7 @@ class VideoIndexerService:
         vi_token = self.get_account_token(arm_token)
 
         api_url = f"https://api.videoindexer.ai/{self.location}/Accounts/{self.account_id}/Videos"
-
+        logger.info(f"video_id: {video_name}.....")
         params = {
             "accessToken": vi_token,
             "name": video_name,
@@ -85,17 +85,19 @@ class VideoIndexerService:
         with open(video_path,'rb') as video_file:
             files = {'file':video_file}
             response = requests.post(api_url,params=params,files=files)
+            logger.info(f"Video upload attempted.....")
 
         if response.status_code != 200:
             raise Exception(f"Azure Upload Failed: {response.text}")
+        return response.json().get("id")
         
     def wait_for_processing(self,video_id):
-        logger.info(f"Waiting for the video {video_id} to ptocess....")
+        logger.info(f"Waiting for the video {video_id} to process....")
         while True:
             arm_token = self.get_access_token()
             vi_token = self.get_account_token(arm_token)
 
-            url = f"https://api.videoindexer.ai/{self.location}/Accounts/{self.account_id}/Videos"
+            url = f"https://api.videoindexer.ai/{self.location}/Accounts/{self.account_id}/Videos/{video_id}/Index"
             params = {"accessToken": vi_token}
             response = requests.get(url,params=params)
             data = response.json()
@@ -107,8 +109,8 @@ class VideoIndexerService:
                 raise Exception("Video Indexing Failed in Azure")
             elif state == "Quarantined":
                 raise Exception("Video Quarantined (Copyright/ Content Policy Violation)")
-            logger.info(f"Status {state} .......waiting 30s")
-            time.sleep(30)
+            logger.info(f"Status {state} .......waiting 120s")
+            time.sleep(120)
 
     def extract_data(self,vj_json):
         '''Parses the JSON into our state format'''

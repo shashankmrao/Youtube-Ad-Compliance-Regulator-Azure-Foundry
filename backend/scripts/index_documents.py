@@ -48,8 +48,8 @@ def index_docs():
         embeddings = AzureOpenAIEmbeddings(
             azure_deployment = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT","text-embbedding-3-small"),
             api_version = os.getenv("AZURE_OPENAI_API_VERSION","2024-02-01"),
-            api_key = os.getenv("AZURE_OPENAI_API_KEY"),
-            azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
+            api_key = os.getenv("AZURE_OPENAI_EMBEDDING_API_KEY"),
+            azure_endpoint = os.getenv("AZURE_OPENAI_EMBEDDING_ENDPOINT")
             )
         logger.info("Embeddings model initialized successfully")
     except Exception as e:
@@ -63,7 +63,7 @@ def index_docs():
             azure_search_endpoint = os.getenv("AZURE_SEARCH_ENDPOINT"),
             azure_search_key = os.getenv("AZURE_SEARCH_API_KEY"),
             index_name = os.getenv("AZURE_SEARCH_INDEX_NAME"),
-            embedding_function = embeddings.embed_query,
+            embedding_function = embeddings.embed_query
             )
         logger.info(f"Vector store initialized for index: {index_name}")
     except Exception as e:

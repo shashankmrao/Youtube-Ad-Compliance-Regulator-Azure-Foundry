@@ -14,7 +14,7 @@ logging.basicConfig(
     level = logging.INFO,
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-logger = logging.getLogger("brand-guardina-runner")
+logger = logging.getLogger("brand-guardian-runner")
 
 def run_cli_simulation():
     '''
@@ -37,13 +37,13 @@ def run_cli_simulation():
         final_state = app.invoke(initial_inputs)
         print("\n------Workflow Execution is complete-----")
 
-        print("\n==Compliance Audit Report ==")
+        print("\n==Compliance Audit Report==")
         print(f"Video ID: {final_state.get('video_id')}")
         print(f"Status: {final_state.get('final_status')}")
         results = final_state.get('compliance_results',[])
         if results:
             for issue in results:
-                print(f"- [{issue.get('severity')}] [{issue.get('category')}]: [{issue.get('description')}]")
+                print(f"---[{issue.get('severity')}] [{issue.get('category')}]: [{issue.get('description')}]")
         else:
             print("No violations detected")
         print("\n[FINAL SUMMARY]")

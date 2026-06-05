@@ -20,3 +20,4 @@ sqlalchemy
 streamlit
 uvicorn
 yt-dlp
+azure-identity-broker
