@@ -74,12 +74,12 @@ def audit_content_node(state:VideoAuditState) -> Dict[str, Any]:
     
     llm= AzureChatOpenAI(
         azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT"),
-        openai_api_version= os.getenv("AZURE_OPENAI_API_VERSION"),
+        api_version= os.getenv("AZURE_OPENAI_API_VERSION"),
         temperature=0.0
     )
     embeddings= AzureOpenAIEmbeddings(
         azure_deployment="text-embedding-3-small",
-        openai_api_version= os.getenv("AZURE_OPENAI_API_VERSION")
+        api_version= os.getenv("AZURE_OPENAI_API_VERSION")
     )
 
     vector_store = AzureSearch(
